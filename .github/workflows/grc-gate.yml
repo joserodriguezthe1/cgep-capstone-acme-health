@@ -52,6 +52,7 @@ jobs:
       - name: Step 1 - Terraform Plan
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: |
+          mkdir -p $GITHUB_WORKSPACE/evidence
           terraform init -input=false
           terraform validate
           terraform plan -out=tfplan -no-color | tee plan.txt

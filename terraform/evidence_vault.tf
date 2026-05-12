@@ -50,6 +50,28 @@ resource "aws_s3_bucket_public_access_block" "evidence" {
   restrict_public_buckets = true
 }
 
+resource "aws_s3_bucket_policy" "evidence_tls" {
+  bucket = aws_s3_bucket.evidence.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Sid       = "DenyNonTLS"
+      Effect    = "Deny"
+      Principal = "*"
+      Action    = "s3:*"
+      Resource  = [
+        aws_s3_bucket.evidence.arn,
+        "${aws_s3_bucket.evidence.arn}/*"
+      ]
+      Condition = {
+        Bool = {
+          "aws:SecureTransport" = "false"
+        }
+      }
+    }]
+  })
+}
+
 output "evidence_vault_name" {
   value       = aws_s3_bucket.evidence.id
   description = "Evidence vault bucket name."

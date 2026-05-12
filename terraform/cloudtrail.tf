@@ -88,5 +88,12 @@ resource "aws_cloudtrail" "mgmt" {
     ControlRef = "AU.L2-3.3.1"
   }
 
+resource "aws_s3_bucket_versioning" "trail" {
+  bucket = aws_s3_bucket.trail.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
   depends_on = [aws_s3_bucket_policy.trail]
 }

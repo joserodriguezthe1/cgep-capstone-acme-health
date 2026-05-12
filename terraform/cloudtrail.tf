@@ -16,8 +16,10 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "trail" {
   bucket = aws_s3_bucket.trail.id
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = aws_kms_key.evidence.arn
     }
+    bucket_key_enabled = true
   }
 }
 
@@ -87,4 +89,11 @@ resource "aws_cloudtrail" "mgmt" {
   }
 
   depends_on = [aws_s3_bucket_policy.trail]
+}
+
+resource "aws_s3_bucket_versioning" "trail" {
+  bucket = aws_s3_bucket.trail.id
+  versioning_configuration {
+    status = "Enabled"
+  }
 }

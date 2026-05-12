@@ -2,12 +2,11 @@ name: grc-gate
 
 on:
   push:
-    branches: 
+    branches:
       - main
-      - 'feature/**'
-      - 'fix/**'
       - 'red-*'
       - 'green-*'
+      - 'feature/**'
   workflow_dispatch:
 
 permissions:

@@ -56,30 +56,7 @@ resource "aws_s3_bucket_versioning" "uploads" {
   }
 }
 
-######################################################################
-# GAP-02: DynamoDB CMK encryption
-# CMMC SC.L2-3.13.11
-######################################################################
 
-resource "aws_dynamodb_table" "intake_encryption" {
-  name         = aws_dynamodb_table.intake.name
-  billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "submission_id"
-
-  attribute {
-    name = "submission_id"
-    type = "S"
-  }
-
-  server_side_encryption {
-    enabled     = true
-    kms_key_arn = aws_kms_key.phi.arn
-  }
-
-  lifecycle {
-    ignore_changes = [name]
-  }
-}
 
 ######################################################################
 # GAP-05: Lambda VPC config

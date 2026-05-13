@@ -23,38 +23,28 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "uploads" {
 ######################################################################
 
 # resource "aws_s3_bucket_policy" "uploads_tls" {
-  bucket = aws_s3_bucket.uploads.id
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Sid       = "DenyNonTLS"
-      Effect    = "Deny"
-      Principal = "*"
-      Action    = "s3:*"
-      Resource  = [
-        aws_s3_bucket.uploads.arn,
-        "${aws_s3_bucket.uploads.arn}/*"
-      ]
-      Condition = {
-        Bool = {
-          "aws:SecureTransport" = "false"
-        }
-      }
-    }]
-  })
-}
-
-######################################################################
-# GAP-04: S3 versioning
-# CMMC MP.L2-3.8.9
-######################################################################
-
-resource "aws_s3_bucket_versioning" "uploads" {
-  bucket = aws_s3_bucket.uploads.id
-  versioning_configuration {
-    status = "Enabled"
-  }
-}
+#   bucket = aws_s3_bucket.uploads.id
+#
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Effect = "Deny"
+#         Principal = "*"
+#         Action = "s3:*"
+#         Resource = [
+#           aws_s3_bucket.uploads.arn,
+#           "${aws_s3_bucket.uploads.arn}/*"
+#         ]
+#         Condition = {
+#           Bool = {
+#             "aws:SecureTransport" = "false"
+#           }
+#         }
+#       }
+#     ]
+#   })
+# }
 
 
 

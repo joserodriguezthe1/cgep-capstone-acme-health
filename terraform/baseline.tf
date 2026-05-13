@@ -22,7 +22,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "uploads" {
 # CMMC SC.L2-3.13.8
 ######################################################################
 
-resource "aws_s3_bucket_policy" "uploads_tls" {
+# resource "aws_s3_bucket_policy" "uploads_tls" {
   bucket = aws_s3_bucket.uploads.id
   policy = jsonencode({
     Version = "2012-10-17"

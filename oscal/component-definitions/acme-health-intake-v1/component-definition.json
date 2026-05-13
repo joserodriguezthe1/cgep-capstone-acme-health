@@ -1,0 +1,172 @@
+{
+  "component-definition": {
+    "uuid": "aadd48b1-1b95-4fe9-b627-641d6937d8ca",
+    "metadata": {
+      "title": "Acme Health Patient Intake API - CMMC L2 Compliance",
+      "last-modified": "2026-05-12T18:00:00.000000+00:00",
+      "version": "1.0.0",
+      "oscal-version": "1.1.3",
+      "parties": [
+        {
+          "uuid": "62e9f387-5bea-4978-8b88-22088faec8b0",
+          "type": "organization",
+          "name": "Jose Rodriguez"
+        }
+      ]
+    },
+    "components": [
+      {
+        "uuid": "b7901f4d-7649-4b39-9752-266bcd0830ab",
+        "type": "software",
+        "title": "acme-health-intake",
+        "description": "Patient Intake API for Acme Health. Terraform baseline wraps the starter with CMMC L2 controls: KMS encryption, TLS enforcement, versioning, least-privilege IAM, CloudTrail audit logging, and an Object Lock evidence vault.",
+        "purpose": "Provide a CMMC L2 compliant Patient Intake API that closes all eight gaps identified in GAPS.md.",
+        "responsible-roles": [
+          {
+            "role-id": "provider",
+            "party-uuids": [
+              "62e9f387-5bea-4978-8b88-22088faec8b0"
+            ]
+          }
+        ],
+        "control-implementations": [
+          {
+            "uuid": "b7866b83-b16b-4236-b1c6-bf14e46d3243",
+            "source": "https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+            "description": "CMMC L2 controls implemented via Terraform baseline and enforced by OPA/Conftest policy suite.",
+            "implemented-requirements": [
+              {
+                "uuid": "427c741b-6f30-4640-b205-65890028681c",
+                "control-id": "sc-28",
+                "description": "PHI data encrypted at rest using customer-managed KMS keys. S3 uploads bucket uses SSE-KMS with aws_kms_key.phi. DynamoDB table uses CMK via server_side_encryption block. Closes GAP-01 and GAP-02.",
+                "props": [
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented"
+                  },
+                  {
+                    "name": "framework",
+                    "value": "CMMC-L2"
+                  },
+                  {
+                    "name": "control-id",
+                    "value": "SC.L2-3.13.11"
+                  },
+                  {
+                    "name": "terraform-resource",
+                    "value": "aws_kms_key.phi"
+                  },
+                  {
+                    "name": "terraform-resource",
+                    "value": "aws_s3_bucket_server_side_encryption_configuration.uploads"
+                  }
+                ],
+                "links": [
+                  {
+                    "rel": "evidence",
+                    "href": "s3://acme-health-intake-evidence-vault-ab870913/runs/",
+                    "text": "Signed pipeline evidence bundle in Object Lock vault."
+                  }
+                ]
+              },
+              {
+                "uuid": "82ad264b-2be2-48c0-bced-17db6f49072b",
+                "control-id": "ac-3",
+                "description": "Lambda IAM role uses least-privilege policy with specific DynamoDB and S3 actions only. Wildcard dynamodb:* and s3:* removed. Closes GAP-07.",
+                "props": [
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented"
+                  },
+                  {
+                    "name": "framework",
+                    "value": "CMMC-L2"
+                  },
+                  {
+                    "name": "control-id",
+                    "value": "AC.L2-3.1.5"
+                  },
+                  {
+                    "name": "terraform-resource",
+                    "value": "aws_iam_role_policy.lambda_least_privilege"
+                  }
+                ],
+                "links": [
+                  {
+                    "rel": "evidence",
+                    "href": "s3://acme-health-intake-evidence-vault-ab870913/runs/",
+                    "text": "Signed pipeline evidence bundle in Object Lock vault."
+                  }
+                ]
+              },
+              {
+                "uuid": "832843f9-c3d9-4651-bfa3-5d5ef95a9248",
+                "control-id": "au-3",
+                "description": "CloudTrail multi-region trail with log file validation enabled. Writes to dedicated S3 bucket with KMS encryption. Closes GAP-08 partial.",
+                "props": [
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented"
+                  },
+                  {
+                    "name": "framework",
+                    "value": "CMMC-L2"
+                  },
+                  {
+                    "name": "control-id",
+                    "value": "AU.L2-3.3.1"
+                  },
+                  {
+                    "name": "terraform-resource",
+                    "value": "aws_cloudtrail.mgmt"
+                  }
+                ],
+                "links": [
+                  {
+                    "rel": "evidence",
+                    "href": "s3://acme-health-intake-evidence-vault-ab870913/runs/",
+                    "text": "Signed pipeline evidence bundle in Object Lock vault."
+                  }
+                ]
+              },
+              {
+                "uuid": "0cd2ad76-e2fd-4b72-ac63-614f4790a126",
+                "control-id": "cm-6",
+                "description": "All resources tagged with Project, ManagedBy, DataClass, and Workload via provider default_tags. S3 uploads bucket enforces TLS via bucket policy denying aws:SecureTransport=false. Versioning enabled. Closes GAP-03 and GAP-04.",
+                "props": [
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented"
+                  },
+                  {
+                    "name": "framework",
+                    "value": "CMMC-L2"
+                  },
+                  {
+                    "name": "control-id",
+                    "value": "SC.L2-3.13.8"
+                  },
+                  {
+                    "name": "terraform-resource",
+                    "value": "aws_s3_bucket_policy.uploads_tls"
+                  },
+                  {
+                    "name": "terraform-resource",
+                    "value": "aws_s3_bucket_versioning.uploads"
+                  }
+                ],
+                "links": [
+                  {
+                    "rel": "evidence",
+                    "href": "s3://acme-health-intake-evidence-vault-ab870913/runs/",
+                    "text": "Signed pipeline evidence bundle in Object Lock vault."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

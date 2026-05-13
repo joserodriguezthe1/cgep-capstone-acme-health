@@ -32,7 +32,7 @@ EVIDENCE_VAULT=acme-health-intake-evidence-vault-ab870913 \
 ## PR history
 
 - ✅ Green PR: `green-baseline-fixes` — all 5 CMMC policies pass
-- ❌ Red PR: `red-gap-demonstration` — 3 policy failures (gaps not closed)
+- ❌ Red PR: `red-violation-demo` — SC.L2-3.13.8 policy failure (TLS policy removed)
 
 ## Structure
 

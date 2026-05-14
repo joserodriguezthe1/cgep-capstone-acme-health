@@ -36,14 +36,14 @@ Every pipeline run produces:
 1. `plan.json` — Terraform plan output
 2. `conftest-results.json` — Policy gate results
 3. `tfsec.sarif` — Security scan results
-4. Signed bundle uploaded to `s3://acme-health-intake-evidence-vault-*/runs/<run_id>/`
+4. Signed bundle uploaded to `s3://acme-health-intake-evidence-vault-*/runs/25830120656/`
 5. Cosign signature verified against Sigstore Rekor transparency log
 6. Object Lock GOVERNANCE retention applied automatically
 
 An assessor verifying this submission:
 1. Reads `oscal/components/acme-health-intake-v1/component-definition.json`
 2. Follows evidence URI to the vault
-3. Runs `verify-evidence.sh <run_id>` from Lab 4-4
+3. Runs `verify-evidence.sh 25830120656` from Lab 4-4
 4. Sees `CHAIN INTACT`
 
 ## Trade-offs
@@ -78,9 +78,9 @@ trestle validate -f component-definitions/acme-health-intake-v1/component-defini
 trestle validate -f profiles/cmmc-l2-minimum/profile.json
 
 # 4. Verify evidence chain (requires AWS credentials)
-EVIDENCE_VAULT=acme-health-intake-evidence-vault-ab870913 \
-  bash scripts/verify-evidence.sh <run_id> --profile default
+EVIDENCE_VAULT=acme-health-intake-evidence-vault-9a1ffa10 \
+  bash scripts/verify-evidence.sh 25830120656 --profile default
 ```
 
 Green PR: `green-baseline-fixes` branch — all 5 policies pass
-Red PR: `red-gap-demonstration` branch — 3 policy failures demonstrating gate works
+Red PR: `red-violation-demo` branch — 3 policy failures demonstrating gate works

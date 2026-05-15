@@ -8,9 +8,9 @@ resource "aws_kms_key" "phi" {
   enable_key_rotation     = true
 
   tags = {
-    Name        = "${local.name_prefix}-phi-cmk"
-    ControlRef  = "SC.L2-3.13.11"
-    DataClass   = "phi"
+    Name       = "${local.name_prefix}-phi-cmk"
+    ControlRef = "SC.L2-3.13.11"
+    DataClass  = "phi"
   }
 }
 

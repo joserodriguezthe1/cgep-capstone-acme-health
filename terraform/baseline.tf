@@ -31,7 +31,7 @@ resource "aws_s3_bucket_policy" "uploads_tls" {
       Effect    = "Deny"
       Principal = "*"
       Action    = "s3:*"
-      Resource  = [
+      Resource = [
         aws_s3_bucket.uploads.arn,
         "${aws_s3_bucket.uploads.arn}/*"
       ]

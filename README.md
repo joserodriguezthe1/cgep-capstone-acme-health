@@ -26,7 +26,7 @@ trestle validate -f profiles/cmmc-l2-minimum/profile.json
 
 # Verify evidence chain
 EVIDENCE_VAULT=acme-health-intake-evidence-vault-ab870913 \
-  bash scripts/verify-evidence.sh <run_id> --profile default
+  bash scripts/verify-evidence.sh 25830120656 --profile default
 ```
 
 ## PR history

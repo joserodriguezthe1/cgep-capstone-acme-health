@@ -1,32 +1,38 @@
-.PHONY: deploy plan test destroy fmt creds
+# CGE-P Capstone — Acme Health Patient Intake API
 
-# Set AWS_PROFILE in your shell before running, or pass on the command line:
-#   make deploy AWS_PROFILE=my-sandbox
 AWS_PROFILE ?= default
+AWS_REGION  ?= us-east-1
 
-# If your profile is AWS SSO-based, the Terraform provider can't always
-# read the profile directly. Export credentials into env vars first.
-CREDS = eval "$$(aws configure export-credentials --profile $(AWS_PROFILE) --format env)"
+.PHONY: deploy test destroy opa-test conftest-check fmt-check validate policy-test all
 
-deploy: ## Deploy the starter (terraform init + apply)
-	@$(CREDS) && cd terraform && terraform init -input=false && terraform apply -auto-approve
+deploy:
+	cd terraform && terraform init && terraform apply -auto-approve
 
-plan: ## Show what deploy would do
-	@$(CREDS) && cd terraform && terraform init -input=false && terraform plan
+test:
+	curl -s -X POST $$(cd terraform && terraform output -raw api_url) \
+	  -H 'Content-Type: application/json' \
+	  -d '{"name":"Test Patient","dob":"1990-01-01","complaint":"Headache"}' | jq .
 
-test: ## Smoke test the deployed API
-	@$(CREDS) && cd terraform && API_URL=$$(terraform output -raw api_url) && \
-		echo "POST $$API_URL" && \
-		curl -sS -X POST "$$API_URL" \
-			-H 'content-type: application/json' \
-			-d '{"patient_id":"P-0001","fields":{"reason":"smoke-test"}}' \
-		| python3 -m json.tool
+destroy:
+	cd terraform && terraform destroy -auto-approve
 
-destroy: ## Tear it all down
-	@$(CREDS) && cd terraform && terraform destroy -auto-approve
+# CGE-P Compliance checks
+opa-test:
+	opa test -v policies/
 
-fmt:
-	cd terraform && terraform fmt -recursive
+conftest-check:
+	conftest test --policy policies --namespace compliance.cmmc.sc1311 policies/fixtures/compliant.json
+	conftest test --policy policies --namespace compliance.cmmc.sc138 policies/fixtures/compliant.json
+	conftest test --policy policies --namespace compliance.cmmc.mp389 policies/fixtures/compliant.json
+	conftest test --policy policies --namespace compliance.cmmc.ac315 policies/fixtures/compliant.json
+	conftest test --policy policies --namespace compliance.cmmc.au331 policies/fixtures/compliant.json
 
-creds: ## Print the active AWS identity (sanity check)
-	@$(CREDS) && aws sts get-caller-identity
+fmt-check:
+	terraform -chdir=terraform fmt -check
+
+validate:
+	terraform -chdir=terraform validate
+
+policy-test: opa-test conftest-check
+
+all: fmt-check validate opa-test conftest-check

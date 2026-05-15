@@ -1,0 +1,98 @@
+{
+    "configuration": {
+        "root_module": {
+            "resources": [
+                {
+                    "address": "aws_s3_bucket.uploads",
+                    "type": "aws_s3_bucket",
+                    "name": "uploads"
+                },
+                {
+                    "address": "aws_s3_bucket_server_side_encryption_configuration.uploads",
+                    "type": "aws_s3_bucket_server_side_encryption_configuration",
+                    "name": "uploads",
+                    "expressions": {
+                        "bucket": {
+                            "references": [
+                                "aws_s3_bucket.uploads.id"
+                            ]
+                        },
+                        "rule": [
+                            {
+                                "apply_server_side_encryption_by_default": [
+                                    {
+                                        "sse_algorithm": {
+                                            "constant_value": "aws:kms"
+                                        },
+                                        "kms_master_key_id": {
+                                            "references": [
+                                                "aws_kms_key.phi.arn"
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "address": "aws_s3_bucket_policy.uploads_tls",
+                    "type": "aws_s3_bucket_policy",
+                    "name": "uploads_tls",
+                    "expressions": {
+                        "bucket": {
+                            "references": [
+                                "aws_s3_bucket.uploads.id"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "address": "aws_s3_bucket_versioning.uploads",
+                    "type": "aws_s3_bucket_versioning",
+                    "name": "uploads",
+                    "expressions": {
+                        "bucket": {
+                            "references": [
+                                "aws_s3_bucket.uploads.id"
+                            ]
+                        },
+                        "versioning_configuration": [
+                            {
+                                "status": {
+                                    "constant_value": "Enabled"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "address": "aws_cloudtrail.mgmt",
+                    "type": "aws_cloudtrail",
+                    "name": "mgmt"
+                }
+            ]
+        }
+    },
+    "planned_values": {
+        "root_module": {
+            "resources": [
+                {
+                    "address": "aws_iam_role_policy.lambda_least_privilege",
+                    "type": "aws_iam_role_policy",
+                    "values": {
+                        "policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":[\"dynamodb:PutItem\",\"dynamodb:GetItem\"],\"Resource\":\"*\"}]}"
+                    }
+                },
+                {
+                    "address": "aws_cloudtrail.mgmt",
+                    "type": "aws_cloudtrail",
+                    "values": {
+                        "is_multi_region_trail": true,
+                        "enable_log_file_validation": true
+                    }
+                }
+            ]
+        }
+    }
+}
